@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Search</title>
+    <script>
+        async function fetchSuggestions(field, query) {
+            const response = await fetch(`/suggest/${field}?q=${query}`);
+            const data = await response.json();
+            return data.suggestions;
+        }
+
+        async function showSuggestions(field) {
+            const input = document.getElementById(field);
+            const query = input.value;
+            if (query.length > 0) {
+                const suggestions = await fetchSuggestions(field, query);
+
+                const suggestionsList = document.getElementById(field + "-suggestions");
+                suggestionsList.innerHTML = "";
+
+                suggestions.forEach(suggestion => {
+                    const option = document.createElement("option");
+                    option.value = suggestion;
+                    suggestionsList.appendChild(option);
+                });
+            }
+        }
+    </script>
+</head>
+<body>
+    <title>Search for Companies</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        form {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            text-align: left;
+        }
+
+        label {
+            margin-top: 10px;
+            font-size: 16px;
+            color: #555;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        input:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        h2 {
+            color: #333;
+            margin-top: 20px;
+            font-size: 18px;
+        }
+
+        .back-home-link {
+            width: 90%;
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .back-home-link:hover {
+            background-color: #0056b3;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .back-home-link:active {
+            background-color: #00408d;
+            box-shadow: none;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Search for Companies</h1>
+    <form method="post" action="/search_results">
+        <label for="name">Company Name:</label>
+        <input list="name-suggestions" id="name" name="name" onkeyup="showSuggestions('name')">
+        <datalist id="name-suggestions"></datalist>
+
+        <label for="industry">Industry:</label>
+        <input list="industry-suggestions" id="industry" name="industry" onkeyup="showSuggestions('industry')">
+        <datalist id="industry-suggestions"></datalist>
+
+        <label for="year_founded">Year Founded:</label>
+        <input list="year_founded-suggestions" id="year_founded" name="year_founded" onkeyup="showSuggestions('year_founded')">
+        <datalist id="year_founded-suggestions"></datalist>
+
+        <label for="country">Country:</label>
+        <input list="country-suggestions" id="country" name="country" onkeyup="showSuggestions('country')">
+        <datalist id="country-suggestions"></datalist>
+
+        <button type="submit">Search</button> <br><br>
+
+        <a href="/home" class="back-home-link">Back to Home</a>
+
+    </form>
+
+    {% if companies %}
+    <h2> {{ result_count }} records found for the query </h2>
+    {% endif %}
+
+
+</body>
+</html>

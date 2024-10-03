@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Data</title>
+    <title>File Upload</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .upload-container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 300px;
+        }
+
+        .upload-container input[type="file"] {
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .upload-container button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .upload-container button:hover {
+            background-color: #0056b3;
+        }
+
+        #progressContainer {
+            width: 100%;
+            background-color: #f3f3f3;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        #progressBar {
+            width: 0%;
+            height: 20px;
+            background-color: #28a745;
+            border-radius: 5px;
+            transition: width 0.3s ease;
+        }
+
+        #progressText {
+            text-align: center;
+            color: #050000;
+            font-weight: bold;
+            position: relative;
+            top: -20px;
+        }
+
+     
+        .back-home-link {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .back-home-link:hover {
+            background-color: #0056b3;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .back-home-link:active {
+            background-color: #00408d;
+            box-shadow: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="upload-container">
+        <input type="file" id="fileInput" />
+        <button id="uploadButton">Upload</button>
+        
+        <div id="progressContainer">
+            <div id="progressBar"></div>
+            <div id="progressText">0%</div>
+        </div> <br> <br> <br>
+        <a href="/home" class="back-home-link">Back to Home</a>
+    </div> 
+    
+
+
+    <script>
+        document.getElementById('uploadButton').onclick = async () => {
+            const file = document.getElementById('fileInput').files[0];
+            const chunkSize = 1024 * 1024; // 1MB per chunk
+            const totalChunks = Math.ceil(file.size / chunkSize);
+            const progressContainer = document.getElementById('progressContainer');
+            const progressBar = document.getElementById('progressBar');
+            const progressText = document.getElementById('progressText');
+
+            progressContainer.style.display = 'block';
+
+            for (let i = 0; i < totalChunks; i++) {
+                const start = i * chunkSize;
+                const end = Math.min(start + chunkSize, file.size);
+                const chunk = file.slice(start, end);
+                const formData = new FormData();
+
+                formData.append('file', chunk);
+                formData.append('chunk_number', i + 1);
+                formData.append('total_chunks', totalChunks);
+
+                // Fetch the upload request
+                const response = await fetch('/upload/', {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                // Update progress bar
+                const percentage = Math.floor(((i + 1) / totalChunks) * 100);
+                progressBar.style.width = percentage + '%';
+                progressText.innerText = percentage + '% Uploaded';
+
+                if (!response.ok) {
+                    console.log('Error uploading chunk');
+                    return;
+                }
+            }
+
+            alert('Upload completed!');
+
+        };
+    </script>
+</body>
+</html>
+    

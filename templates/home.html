@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Home</title>
+</head>
+<body>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .navbar {
+            background-color: #0e88ad;
+            overflow: hidden;
+        }
+
+        .navbar ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+        }
+
+        .navbar ul li {
+            flex: 1;
+        }
+
+        .navbar ul li a {
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 20px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .navbar ul li a:hover {
+            background-color: #575757;
+        }
+    </style>
+    <h2>Welcome, {{ user.upper() }}</h2> <br><br>
+    <nav class="navbar">
+        <ul>
+            <li><a href="/upload_file">Upload Data</a></li>
+            <li><a href="/search">Query Builder</a></li>
+            <li><a href="/users">Manage Users</a></li>
+            <li><a href="/logout">Logout</a></li>
+        </ul>
+    </nav>
+</body>
+</html>
