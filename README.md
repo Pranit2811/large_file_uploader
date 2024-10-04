@@ -42,11 +42,13 @@ To run the FastAPI application, execute the following command:
 python main.py
 You should see output indicating that the server is running, typically on http://127.0.0.1:8000.
 
-5. Access the Login Page
+****Start Consumer Using Command: celery -A test worker -B -Q SFTP_REPORT_CREATOR
+
+6. Access the Login Page
 Open your web browser and navigate to the following URL:
 http://127.0.0.1:8000/login/
 
-6. Log In
+7. Log In
 Use the default credentials to log in:
 
 Username: pranit
